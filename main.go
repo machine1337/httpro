@@ -27,7 +27,7 @@ func main() {
 		mali()
 		//hello()
 		//fmt.Println("LInux")
-		//meo()
+		meo()
 	default:
 		fmt.Printf("%s.\n", os)
 	}
