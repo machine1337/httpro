@@ -1,3 +1,3 @@
-module github.com/hellwound/httprobe
+module github.com/hellwound/httpro
 
 go 1.18
