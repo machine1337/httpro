@@ -3,8 +3,8 @@ PROJDIR=$(cd `dirname $0`/.. && pwd)
 
 VERSION="${1}"
 TAG="v${VERSION}"
-USER="tomnomnom"
-REPO="httprobe"
+USER="hellwound"
+REPO="httpro"
 BINARY="${REPO}"
 
 if [[ -z "${VERSION}" ]]; then
